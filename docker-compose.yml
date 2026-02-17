@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    ports:
+      - "80:80"
+    environment:
+      - BACKEND_HOST=${BACKEND_HOST:-10.0.1.10}
+      - BACKEND_PORT=${BACKEND_PORT:-8000}
+    restart: unless-stopped
