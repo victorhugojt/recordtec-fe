@@ -29,7 +29,7 @@ This creates `dist/` with:
 
 2. **Copy files to the VM** (replace with your VM's external IP or hostname):
    ```bash
-   scp -r dist/* user@<FRONTEND_VM_IP>:/tmp/recordtec-fe/
+   scp -r dist/* victor.h.jimenez.t@gmail.com@<FRONTEND_IP>:/tmp/recordtec-fe/
    ```
 
 3. **On the frontend VM**, install Nginx and set up:
@@ -73,6 +73,61 @@ See `docker-compose.yml` and `Dockerfile` for containerized deployment.
 - Deploy your backend with Docker as planned
 - Ensure the backend listens on `0.0.0.0` (not just 127.0.0.1) so it accepts connections from the frontend VM
 - The frontend VM must have network connectivity to the backend VM's private IP (same VPC)
+
+### Deploy Backend (Build on Mac, Transfer to Backend)
+
+**Important:** GCP VMs use `linux/amd64`. If you build on Apple Silicon (M1/M2/M3), you must target that platform:
+
+```bash
+# On your Mac - build for AMD64 (GCP VMs)
+docker build --platform linux/amd64 -t recordtec-backend:latest .
+docker save -o backend-image.tar recordtec-backend:latest
+```
+
+Then transfer `backend-image.tar` to the frontend, then to the backend (see steps below).
+
+---
+
+### Deploy Backend (Build on Frontend, Transfer to Backend)
+
+Alternatively, build on the frontend VM (already AMD64) — no platform flag needed.
+
+**Prerequisite:** Add the frontend's SSH key to the backend VM (see SSH key setup above).
+
+1. **SSH to frontend** (from your laptop):
+   ```bash
+   ssh victor.h.jimenez.t@gmail.com@<FRONTEND_IP>
+   ```
+
+2. **Copy backend code to frontend** (from your laptop, in another terminal):
+   ```bash
+   scp -r /path/to/your-backend victor.h.jimenez.t@gmail.com@<FRONTEND_IP>:/tmp/
+   ```
+
+3. **On the frontend VM**, build and save the image (frontend is AMD64, no platform flag needed):
+   ```bash
+   cd /tmp/your-backend
+   docker build -t recordtec-backend:latest .
+   docker save -o backend-image.tar recordtec-backend:latest
+   ```
+
+4. **Transfer to backend** (from the frontend VM):
+   ```bash
+   scp backend-image.tar victor.h.jimenez.t@gmail.com@<BACKEND_PRIVATE_IP>:/tmp/
+   ```
+
+5. **SSH to backend** (from frontend, using jump host from laptop: `ssh -J user@frontend user@backend`):
+   ```bash
+   ssh victor.h.jimenez.t@gmail.com@<BACKEND_PRIVATE_IP>
+   ```
+
+6. **On the backend VM**, load and run:
+   ```bash
+   docker load -i /tmp/backend-image.tar
+   docker run -d -p 8000:8000 --name backend recordtec-backend:latest
+   ```
+
+Replace `<FRONTEND_IP>` with the frontend VM's external IP and `<BACKEND_PRIVATE_IP>` with the backend's private IP (e.g. `10.10.1.2`).
 
 ## Firewall Rules (Detailed)
 
