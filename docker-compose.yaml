@@ -1,0 +1,38 @@
+services:
+  recordtec:
+    image: ghcr.io/victorhugojt/recordtec:otel-grafana-integration
+    container_name: recordtec-app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env.prod
+    environment:
+      # OpenTelemetry (set OTEL_ENABLED=true in .env.prod to enable)
+      - OTEL_ENABLED=${OTEL_ENABLED:-false}
+      - OTEL_SERVICE_NAME=recordtec-prod
+      # Point to external monitoring VM (update with actual IP)
+      - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_EXPORTER_OTLP_ENDPOINT:-http://MONITORING_VM_IP:4317}
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=production,service.version=0.1.0
+    depends_on:
+      - cloudsql
+    restart: unless-stopped
+    networks:
+      - recordtec-network
+
+  cloudsql:
+    image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.13.0
+    container_name: cloudsql-proxy
+    ports:
+      - "3306:3306"
+    command: 
+      - "--address=0.0.0.0"
+      - "--port=3306"
+      - "project-2c268745-0c2f-477a-b6a:us-central1:poc-mysql-instance"
+    networks:
+      - recordtec-network
+    restart: unless-stopped
+
+networks:
+  recordtec-network:
+    name: recordtec-network
+    driver: bridge
