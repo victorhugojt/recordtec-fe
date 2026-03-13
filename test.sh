@@ -1,4 +1,4 @@
-ssh victor.h.jimenez.t@gmail.com@34.171.79.150
+ssh victor.h.jimenez.t@gmail.com@34.30.231.147
 
 scp docker-compose.yaml victor.h.jimenez.t@gmail.com@34.171.79.150:/tmp/
 
