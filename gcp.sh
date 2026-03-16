@@ -101,6 +101,8 @@ scp backend-image.tar victor.h.jimenez.t@gmail.com@10.10.1.4:/tmp/
 
 curl http://10.10.1.4:8000/health
 
+curl http://10.10.1.4:8000/generes
+
 docker login ghcr.io -u victorhugojt -p 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
 
 echo "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" | docker login ghcr.io -u victorhugojt --password-stdin

@@ -21,7 +21,7 @@ COPY deploy/docker-entrypoint.sh /docker-entrypoint.sh
 
 RUN chmod +x /docker-entrypoint.sh
 
-ENV BACKEND_HOST=10.0.1.10
+ENV BACKEND_HOST=10.10.1.4
 ENV BACKEND_PORT=8000
 
 EXPOSE 80

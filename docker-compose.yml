@@ -1,9 +1,13 @@
 services:
-  app:
+  frontend:
     build: .
+    container_name: recordtec-frontend
     ports:
-      - "80:80"
+      - "8080:80"
     environment:
-      - BACKEND_HOST=${BACKEND_HOST:-10.0.1.10}
+      - BACKEND_HOST=${BACKEND_HOST:-127.0.0.1}
       - BACKEND_PORT=${BACKEND_PORT:-8000}
     restart: unless-stopped
+
+# UI only (no backend):  docker compose up -d --build
+# With GCP backend:      BACKEND_HOST=10.10.1.4 docker compose up -d --build
