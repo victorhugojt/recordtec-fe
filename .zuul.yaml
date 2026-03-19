@@ -1,2 +1,48 @@
 ---
-# Job configuration managed centrally in victorhugojt/zuul-config
+# ===========================================================================
+# victorhugojt/recordtec-fe — .zuul.yaml
+#
+# This repo owns its own CI jobs and decides which run in each pipeline.
+# All jobs inherit from "base" defined in zuul-config (the config-project).
+# Playbooks live inside THIS repo under playbooks/
+# ===========================================================================
+
+- job:
+    name: recordtec-fe-lint
+    parent: base
+    description: Zuul smoke check (generic output only)
+    run: playbooks/smoke-check.yaml
+
+- job:
+    name: recordtec-fe-unit-tests
+    parent: base
+    description: Zuul smoke check (generic output only)
+    run: playbooks/smoke-check.yaml
+
+- job:
+    name: recordtec-fe-e2e-tests
+    parent: base
+    description: Zuul smoke check (generic output only)
+    run: playbooks/smoke-check.yaml
+    timeout: 3600
+
+- job:
+    name: recordtec-fe-build
+    parent: base
+    description: Zuul smoke check (generic output only)
+    run: playbooks/smoke-check.yaml
+
+- project:
+    merge-mode: squash
+    check:
+      jobs:
+        - recordtec-fe-lint
+        - recordtec-fe-unit-tests
+        - recordtec-fe-e2e-tests
+        - recordtec-fe-build
+    gate:
+      jobs:
+        - recordtec-fe-lint
+        - recordtec-fe-unit-tests
+        - recordtec-fe-e2e-tests
+        - recordtec-fe-build

@@ -1,0 +1,7 @@
+- name: Zuul smoke check playbook
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Print generic Zuul smoke-check message
+      debug:
+        msg: "Zuul job wiring is working for recordtec-fe."
