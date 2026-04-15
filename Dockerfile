@@ -21,7 +21,8 @@ COPY deploy/docker-entrypoint.sh /docker-entrypoint.sh
 
 RUN chmod +x /docker-entrypoint.sh
 
-ENV BACKEND_HOST=10.10.1.4
+# Overridden at deploy time (Ansible/docker run -e). Default = local UI only.
+ENV BACKEND_HOST=127.0.0.1
 ENV BACKEND_PORT=8000
 
 EXPOSE 80

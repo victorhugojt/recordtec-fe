@@ -9,5 +9,5 @@ services:
       - BACKEND_PORT=${BACKEND_PORT:-8000}
     restart: unless-stopped
 
-# UI only (no backend):  docker compose up -d --build
-# With GCP backend:      BACKEND_HOST=10.10.1.4 docker compose up -d --build
+# Copy .env.example → .env and set BACKEND_HOST, or export before compose.
+# Ansible: generate .env on the target host or pass -e BACKEND_HOST=...

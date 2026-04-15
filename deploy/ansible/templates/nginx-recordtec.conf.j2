@@ -1,22 +1,18 @@
-# Example for manual Nginx (no Docker) — prefer Ansible:
-#   deploy/ansible/templates/nginx-recordtec.conf.j2
-# Replace BACKEND_PLACEHOLDER or use group_vars recordtec_backend_host.
-
+{# Nginx site for recordtec-fe on the public VM (manual install, not Docker)
+   Set group_vars e.g. recordtec_backend_host: "10.10.1.4" #}
 server {
     listen 80;
-    server_name _;  # Replace with your domain or leave as _ for default
+    server_name _;
 
     root /var/www/recordtec-fe;
     index index.html;
 
-    # Serve static frontend (Vue SPA)
     location / {
         try_files $uri $uri/ /index.html;
     }
 
     location /api/ {
-        # Replace with backend private IP, or use deploy/ansible/templates/nginx-recordtec.conf.j2
-        proxy_pass http://127.0.0.1:8000/;
+        proxy_pass http://{{ recordtec_backend_host }}:{{ recordtec_backend_port | default(8000) }}/;
         proxy_http_version 1.1;
         proxy_connect_timeout 60s;
         proxy_send_timeout 60s;

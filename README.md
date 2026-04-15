@@ -32,13 +32,17 @@ docker compose up -d --build
 
 Open **http://localhost:8080** — the UI loads. The "Call Backend" button will fail until the backend is configured.
 
-### 2. With GCP backend
+### 2. With backend (set IP — no hardcoding in the image)
 
 ```bash
-BACKEND_HOST=10.10.1.4 docker compose up -d --build
+cp .env.example .env
+# Edit .env: BACKEND_HOST=<backend private IP>
+docker compose up -d --build
 ```
 
-Replace `10.10.1.4` with your backend VM's private IP.
+Or: `BACKEND_HOST=10.10.1.4 docker compose up -d --build`
+
+**Ansible:** See `deploy/ansible/README.md` — pass `recordtec_backend_host` into `BACKEND_HOST` for Docker or use the Jinja template for host Nginx.
 
 ### Troubleshooting
 
